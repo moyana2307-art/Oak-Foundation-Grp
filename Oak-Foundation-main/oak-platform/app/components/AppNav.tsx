@@ -25,24 +25,24 @@ function DesktopSidebar() {
   const items = NAV_ITEMS;
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-[264px] flex-col bg-gradient-to-b from-[#263D61] via-[#1D3150] to-[#162E55] shadow-[4px_0_24px_-12px_rgba(10,25,55,0.6)] lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-[264px] flex-col border-r border-[#E3E8EF] bg-white shadow-[4px_0_24px_-12px_rgba(10,25,55,0.15)] md:flex">
       <div className="flex items-center gap-3 px-5 pb-5 pt-6">
-        <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-[10px] brightness-0 invert">
+        <span className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-[10px]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="" className="h-full w-full object-contain" />
         </span>
         <div className="leading-tight">
-          <p className="text-[13px] font-extrabold tracking-[0.04em] text-white">
+          <p className="text-[13px] font-extrabold tracking-[0.04em] text-[#162E55]">
             OAK FOUNDATION
           </p>
-          <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#8FB1DE]">
+          <p className="text-[9px] font-semibold uppercase tracking-[0.2em] text-[#8A97AB]">
             Partner Convening 2026
           </p>
         </div>
       </div>
 
       <nav className="mt-2 flex-1 space-y-1 px-3" aria-label="Primary">
-        <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-[0.22em] text-[#6E86B5]">
+        <p className="px-2 pb-1 text-[9px] font-bold uppercase tracking-[0.22em] text-[#8A97AB]">
           Menu
         </p>
         {items.map((item) => {
@@ -57,11 +57,11 @@ function DesktopSidebar() {
               aria-current={active ? "page" : undefined}
               className={`flex items-center gap-3 rounded-[12px] px-3 py-2.5 text-[13.5px] font-semibold transition ${
                 active
-                  ? "bg-white text-[#162E55] shadow-[0_8px_18px_-10px_rgba(0,0,0,0.5)]"
-                  : "text-[#B8C6DE] hover:bg-white/10 hover:text-white"
+                  ? "bg-[#162E55] text-white shadow-[0_8px_18px_-10px_rgba(0,0,0,0.4)]"
+                  : "text-[#98A3B5] hover:bg-[#EEF1F5] hover:text-[#162E55]"
               }`}
             >
-              <span className={active ? "text-[#162E55]" : "text-[#8FB1DE]"}>
+              <span className={active ? "text-white" : "text-[#8A97AB]"}>
                 {item.icon}
               </span>
               {item.label}
@@ -70,9 +70,9 @@ function DesktopSidebar() {
         })}
       </nav>
 
-      <div className="mx-4 mb-5 rounded-[14px] bg-white/10 p-3.5 ring-1 ring-white/15">
-        <p className="text-[11px] font-bold text-white">OAK Partner Convening 2026</p>
-        <p className="mt-0.5 text-[11px] font-medium text-[#A8BAD9]">
+      <div className="mx-4 mb-5 rounded-[14px] bg-[#F4F5F7] p-3.5 ring-1 ring-[#E3E8EF]">
+        <p className="text-[11px] font-bold text-[#162E55]">OAK Partner Convening 2026</p>
+        <p className="mt-0.5 text-[11px] font-medium text-[#6B7A90]">
           Harare, Zimbabwe &middot; 9–11 March 2026
         </p>
       </div>
@@ -83,20 +83,24 @@ function DesktopSidebar() {
 function MobileHeader() {
   return (
     <>
-      <header className="z-30 bg-[#162E55] shadow-[0_4px_18px_-8px_rgba(15,30,60,0.5)] lg:hidden">
-        <div className="mx-auto flex h-[56px] w-full max-w-[560px] items-center gap-2.5 px-4">
-          <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-[9px] brightness-0 invert">
+      <header className="sticky top-0 z-30 bg-[#162E55] shadow-[0_4px_18px_-8px_rgba(15,30,60,0.5)] md:hidden">
+        <div className="mx-auto flex h-[64px] w-full max-w-[560px] items-center gap-3 px-4">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-[9px] brightness-0 invert">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="" className="h-full w-full object-contain" />
           </span>
-          <div className="leading-tight">
-            <p className="text-[13px] font-extrabold tracking-[0.06em] text-white">
-              OAK FOUNDATION
+          <div className="shrink-0 leading-none">
+            <p className="text-[15px] font-extrabold tracking-[0.06em] text-white">
+              OAK
             </p>
-            <p className="text-[9px] font-semibold uppercase tracking-[0.22em] text-[#8FB1DE]">
-              Partner Convening 2026
+            <p className="mt-0.5 text-[8px] font-bold uppercase tracking-[0.28em] text-white/70">
+              Foundation
             </p>
           </div>
+          <span className="ml-1 h-6 w-px bg-white/25" aria-hidden />
+          <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/90">
+            Partner Convening 2026
+          </p>
         </div>
       </header>
 
@@ -107,12 +111,15 @@ function MobileHeader() {
 
 function BottomTabBar() {
   const pathname = usePathname();
+  if (pathname === "/" || pathname.startsWith("/register")) {
+    return null;
+  }
   const items = NAV_ITEMS;
 
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-[#E3E8EF] bg-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-[#E3E8EF] bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-16px_rgba(22,46,85,0.25)] md:hidden"
     >
       <div className="mx-auto grid h-[64px] w-full max-w-[560px] grid-cols-5">
         {items.map((item) => {
@@ -131,7 +138,7 @@ function BottomTabBar() {
             >
               <span
                 className={`flex h-[30px] w-[44px] items-center justify-center rounded-[14px] transition ${
-                  active ? "bg-[#162E55] text-white" : "text-current"
+                  active ? "bg-[#E1E8F5] text-[#162E55]" : "text-current"
                 }`}
               >
                 {item.icon}

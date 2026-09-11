@@ -53,10 +53,10 @@ export default function AttendanceDashboard({
     return [...rows, ...merged];
   }, [rows, seedRows, store.records]);
 
-  const expected = rows.length > 0 ? rows.length : EXPECTED_ATTENDEES;
-  const checkedIn = serverCheckedIn + store.checkedInCount;
+  const expected = EXPECTED_ATTENDEES;
+  const checkedIn = Math.min(expected, serverCheckedIn + store.checkedInCount);
   const pending = Math.max(0, expected - checkedIn);
-  const pct = expected > 0 ? Math.round((checkedIn / expected) * 100) : 0;
+  const pct = expected > 0 ? Math.min(100, Math.round((checkedIn / expected) * 100)) : 0;
 
   const todayLabel = new Date().toLocaleDateString([], {
     day: "numeric",

@@ -334,103 +334,119 @@ export default function CheckinScanner({
   if (outcome?.kind === "success") {
     const next = {
       title: outcome.person.nextSession ?? DEFAULT_SESSION.title,
-      time: outcome.person.nextSessionTime ?? DEFAULT_SESSION.time,
       venue: outcome.person.venue ?? DEFAULT_SESSION.venue,
     };
     return (
-      <div className="mt-5">
-        <div className="overflow-hidden rounded-[24px] bg-gradient-to-br from-[#1E9E62] via-[#1B7A4E] to-[#14543A] p-5 text-white shadow-[0_18px_40px_-18px_rgba(20,84,58,0.6)]">
-          <div className="flex items-center gap-3">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/25">
+      <div className="mt-5 space-y-6">
+        {/* Block 1 — Success Banner */}
+        <div className="relative overflow-hidden rounded-[20px] bg-gradient-to-br from-[#1E9E62] to-[#2ECC84] p-6 shadow-[0_18px_40px_-18px_rgba(20,84,58,0.6)]">
+          <span
+            className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-white/10"
+            aria-hidden
+          />
+          <div className="flex items-center gap-4">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-white/15 ring-1 ring-white/20">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden>
                 <circle cx="12" cy="12" r="9" />
                 <path d="M8.5 12.5 11 15l4.5-5.5" />
               </svg>
             </span>
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#C9F2DC]">
+              <p className="text-[21px] font-extrabold leading-tight text-white">
                 Checked In Successfully
               </p>
-              <p className="mt-0.5 text-[16px] font-extrabold leading-tight text-white">
-                Welcome aboard
-              </p>
-              <p className="text-[12px] font-semibold text-[#C9F2DC]">
+              <p className="mt-1 inline-flex items-center gap-1.5 text-[13px] font-semibold text-white/85">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5" aria-hidden>
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 6v6l4 2" />
+                </svg>
                 {longDate(outcome.person.time)}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="mt-4 rounded-[20px] border border-[#E3E8EF] bg-white p-4 shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
-          <div className="flex items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#E1E8F5] text-[14px] font-bold text-[#31478A]">
+        {/* Block 2 — Attendee Card */}
+        <div className="rounded-[20px] border border-[#E3E8EF] bg-white p-6 shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
+          <div className="flex items-center gap-4">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#E1E8F5] text-[17px] font-bold text-[#31478A]">
               {initials(outcome.person.name)}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[15px] font-bold text-[#162E55]">{outcome.person.name}</p>
-              <p className="truncate text-[12px] text-[#5B6B84]">{outcome.person.organisation}</p>
+              <p className="truncate text-[18px] font-bold text-[#162E55]">{outcome.person.name}</p>
+              <p className="truncate text-[14px] text-[#6B7A90]">{outcome.person.organisation}</p>
+              <span className="mt-1.5 inline-flex items-center gap-1.5 rounded-full bg-[#E1E8F5] px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.06em] text-[#2B5BBD]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#2B5BBD]" aria-hidden />
+                {ROLE_LABELS[outcome.person.role] ?? outcome.person.role}
+              </span>
             </div>
-            <RoleBadge role={outcome.person.role} />
+          </div>
+          <div className="my-4 h-px bg-[#E3E8EF]" />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="rounded-[14px] bg-[#F4F5F7] p-4">
+              <p className="inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#8A97AB]">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3" aria-hidden>
+                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+                </svg>
+                Next Session
+              </p>
+              <p className="mt-2 text-[15px] font-extrabold leading-snug text-[#162E55]">
+                {next.title}
+              </p>
+            </div>
+            <div className="rounded-[14px] bg-[#F4F5F7] p-4">
+              <p className="inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#8A97AB]">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3" aria-hidden>
+                  <path d="M12 3 2 20h20L12 3Z" />
+                  <circle cx="12" cy="14" r="3" />
+                </svg>
+                Venue
+              </p>
+              <p className="mt-2 text-[15px] font-extrabold leading-snug text-[#162E55]">
+                {next.venue}
+              </p>
+            </div>
           </div>
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <div className="rounded-[20px] border border-[#E3E8EF] bg-white p-4">
-            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#8A97AB]">
-              Next Session
-            </p>
-            <p className="mt-1.5 text-[14px] font-extrabold leading-snug text-[#162E55]">
-              {next.title}
-            </p>
-            <p className="mt-0.5 text-[11px] font-semibold text-[#2B5BBD]">
-              {next.time} · {next.venue}
-            </p>
-          </div>
-          <div className="rounded-[20px] border border-[#E3E8EF] bg-white p-4">
-            <p className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#8A97AB]">
-              Venue
-            </p>
-            <p className="mt-1.5 text-[14px] font-extrabold leading-snug text-[#162E55]">
-              {next.venue}
-            </p>
-            <p className="mt-0.5 text-[11px] font-semibold text-[#2B5BBD]">
-              {CURRENT_SESSION.dateLabel} · Level 2
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-3 rounded-[20px] border border-[#E3E8EF] bg-white p-4">
-          <div className="flex items-center justify-between">
-            <p className="inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.2em] text-[#8A97AB]">
-              <span className="h-2 w-2 rounded-full bg-[#1E9E62] animate-pulse" aria-hidden />
-              Live Event Status
-            </p>
-            <p className="text-[11px] font-bold text-[#162E55]">
-              {liveCount} of {EXPECTED_ATTENDEES} attendees
-            </p>
-          </div>
-          <p className="mt-2 text-[13px] font-semibold text-[#162E55]">
-            {CURRENT_SESSION.title}
+        {/* Block 3 — Live Event Status */}
+        <div className="rounded-[20px] border border-[#E3E8EF] bg-white p-6 shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
+          <p className="inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.2em] text-[#8A97AB]">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5" aria-hidden>
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Live Event Status
           </p>
-          <p className="mt-0.5 text-[12px] text-[#6B7A90]">
-            Starts {CURRENT_SESSION.timeLabel} · {CURRENT_SESSION.venue}
+          <div className="mt-3 flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[#1E9E62] animate-pulse" aria-hidden />
+            <p className="text-[15px] font-extrabold text-[#162E55]">
+              {CURRENT_SESSION.title} starting at {CURRENT_SESSION.timeLabel}
+            </p>
+          </div>
+          <p className="mt-2 text-[13px] text-[#6B7A90]">
+            {liveCount} of {EXPECTED_ATTENDEES} attendees checked in · {CURRENT_SESSION.venue}
           </p>
-          <div className="mt-3 h-[8px] overflow-hidden rounded-full bg-[#EEF1F5]">
+          <div className="mt-3 h-[10px] overflow-hidden rounded-full bg-[#EEF1F5]">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-[#1E9E62] to-[#155C39] transition-all"
+              className="h-full rounded-full bg-[#162E55] transition-all duration-500"
               style={{ width: `${pct}%` }}
             />
           </div>
-          <p className="mt-2 text-[11px] font-semibold text-[#8A97AB]">
-            {liveCount} of {EXPECTED_ATTENDEES} checked in · {CURRENT_SESSION.venue}
-          </p>
         </div>
 
+        {/* Block 4 — Action Button */}
         <button
           type="button"
           onClick={returnToScanner}
-          className="mt-4 h-[50px] w-full rounded-[14px] bg-[#162E55] text-[14px] font-bold text-white transition hover:bg-[#1F3A6B]"
+          className="flex h-[54px] w-full items-center justify-center gap-2 rounded-[14px] bg-[#162E55] text-[14px] font-bold text-white transition hover:bg-[#1F3A6B]"
         >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
+            <path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2" />
+            <rect x="9" y="9" width="6" height="6" rx="1" />
+          </svg>
           Scan Next Attendee
         </button>
       </div>
@@ -502,7 +518,7 @@ export default function CheckinScanner({
   return (
     <div className="mt-5 space-y-4">
       <div className="overflow-hidden rounded-[24px] border border-[#E3E8EF] bg-gradient-to-b from-[#0F1E38] to-[#0A1528] p-2 shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
-        <div className="relative flex h-[200px] flex-col items-center justify-center">
+        <div className="relative flex h-[300px] flex-col items-center justify-center sm:h-[240px]">
           <div className="pointer-events-none absolute inset-0 rounded-[16px] bg-black/30" aria-hidden />
           <ViewFinderBrackets />
           <span className="relative text-center">
@@ -820,11 +836,18 @@ function reasonLine(reason: string): string {
 
 function longDate(iso: string): string {
   const d = new Date(iso);
-  return (
-    d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) +
-    " · " +
-    d.toLocaleDateString([], { day: "numeric", month: "long", year: "numeric" })
-  );
+  if (Number.isNaN(d.getTime())) return "—";
+  const time = d.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  const date = d.toLocaleDateString([], {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  return `${time} · ${date}`;
 }
 
 function initials(name: string): string {

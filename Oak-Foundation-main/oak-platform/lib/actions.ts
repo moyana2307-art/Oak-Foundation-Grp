@@ -79,7 +79,6 @@ export async function registerAttendee(
       dietary: data.dietary.trim() || null,
       accessibility: data.accessibility.trim() || null,
       travel: data.travel.trim() || null,
-      accommodation: data.accommodation.trim() || null,
       consent,
       access_token: accessToken,
     })

@@ -21,7 +21,6 @@ const initialData: RegistrationData = {
   dietary: "",
   accessibility: "",
   travel: "",
-  accommodation: "",
 };
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -45,6 +44,27 @@ export default function RegistrationForm() {
 
   const set = (field: keyof RegistrationData) => (value: string) =>
     setData((prev) => ({ ...prev, [field]: value }));
+
+  const handleEmailBlur = () => {
+    const email = data.email.trim();
+    if (email && !emailPattern.test(email)) {
+      setErrors((prev) => ({
+        ...prev,
+        email: "Please enter a valid email address.",
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, email: undefined }));
+    }
+  };
+
+  const canSubmit =
+    data.firstName.trim() !== "" &&
+    data.lastName.trim() !== "" &&
+    data.organisation.trim() !== "" &&
+    data.role !== "" &&
+    data.email.trim() !== "" &&
+    emailPattern.test(data.email.trim()) &&
+    consent;
 
   const validate = (): RegistrationErrors => {
     const next: RegistrationErrors = {};
@@ -88,8 +108,8 @@ export default function RegistrationForm() {
 
   return (
     <section className="px-4 md:px-6">
-      <div className="mx-auto w-full max-w-[520px] rounded-[24px] bg-white p-5 shadow-[0_18px_45px_-20px_rgba(22,46,85,0.3)]">
-        <h2 className="mb-5 text-[18px] font-bold text-[#162E55]">
+      <div className="mx-auto w-full max-w-[520px] rounded-[24px] bg-white p-6 shadow-[0_18px_45px_-20px_rgba(22,46,85,0.3)]">
+        <h2 className="mb-4 text-[18px] font-bold text-[#162E55]">
           Registration Form
         </h2>
 
@@ -212,6 +232,7 @@ export default function RegistrationForm() {
                   name="email"
                   value={data.email}
                   onChange={(e) => set("email")(e.target.value)}
+                  onBlur={handleEmailBlur}
                   placeholder="you@organisation.org"
                   autoComplete="email"
                   aria-invalid={errors.email ? true : undefined}
@@ -241,11 +262,9 @@ export default function RegistrationForm() {
                 dietary={data.dietary}
                 accessibility={data.accessibility}
                 travel={data.travel}
-                accommodation={data.accommodation}
                 onChangeDietary={set("dietary")}
                 onChangeAccessibility={set("accessibility")}
                 onChangeTravel={set("travel")}
-                onChangeAccommodation={set("accommodation")}
               />
             </div>
 
@@ -255,8 +274,8 @@ export default function RegistrationForm() {
 
             <button
               type="submit"
-              disabled={submitting}
-              className="mt-5 h-[56px] w-full rounded-[15px] bg-gradient-to-b from-[#2E5CB4] via-[#1F3B78] to-[#162E55] text-[15px] font-bold text-white shadow-[0_14px_28px_-12px_rgba(22,46,85,0.6)] transition hover:from-[#3367C6] hover:to-[#162E55] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#162E55]/40 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-70"
+              disabled={!canSubmit || submitting}
+              className="mt-5 h-[56px] w-full rounded-[15px] bg-[#162E55] text-[15px] font-bold text-white transition hover:bg-[#1F3A6B] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#162E55]/40 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none"
             >
               {submitting ? "Registering…" : "Register"}
             </button>

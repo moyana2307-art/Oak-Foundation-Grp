@@ -20,7 +20,7 @@ export default async function AttendancePage() {
   if (error) {
     return (
       <main className="min-h-screen bg-[#F4F5F7]">
-        <div className="mx-auto max-w-[560px] lg:max-w-[820px] px-4 py-10 md:px-6">
+        <div className="mx-auto max-w-[560px] md:max-w-[820px] px-4 py-10 md:px-6">
           <div className="rounded-[24px] border border-[#E3E8EF] bg-white p-6 text-center">
             <h1 className="text-lg font-bold text-[#162E55]">Attendance</h1>
             <p className="mt-2 text-[13px] text-[#6B7A90]">
@@ -64,7 +64,7 @@ export default async function AttendancePage() {
 
   return (
     <main className="min-h-screen bg-[#F4F5F7]">
-      <div className="mx-auto max-w-[560px] lg:max-w-[820px] px-4 py-6 md:px-6">
+      <div className="mx-auto max-w-[560px] md:max-w-[820px] px-4 py-6 md:px-6">
         <header className="rounded-[24px] bg-gradient-to-br from-[#263D61] via-[#1D3150] to-[#162E55] px-6 py-7 shadow-[0_18px_40px_-18px_rgba(22,46,85,0.55)]">
           <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8FB1DE]">
             OAK 2026

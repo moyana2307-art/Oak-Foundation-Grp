@@ -53,7 +53,7 @@ export async function POST(request: Request) {
       already: true,
       reason: "duplicate",
       error: "This QR code has already been used to check in today.",
-      person: { ...person, time: formatTime(existing.checked_in_at) },
+      person: { ...person, time: existing.checked_in_at },
     });
   }
 
@@ -74,13 +74,6 @@ export async function POST(request: Request) {
     ok: true,
     checkinId: checkin.id,
     registered: true,
-    person: { ...person, time: formatTime(checkin.checked_in_at) },
-  });
-}
-
-function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
+    person: { ...person, time: checkin.checked_in_at },
   });
 }

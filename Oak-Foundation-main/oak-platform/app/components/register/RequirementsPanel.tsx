@@ -4,30 +4,26 @@ type RequirementsPanelProps = {
   dietary: string;
   accessibility: string;
   travel: string;
-  accommodation: string;
   onChangeDietary: (value: string) => void;
   onChangeAccessibility: (value: string) => void;
   onChangeTravel: (value: string) => void;
-  onChangeAccommodation: (value: string) => void;
 };
 
 export default function RequirementsPanel({
   dietary,
   accessibility,
   travel,
-  accommodation,
   onChangeDietary,
   onChangeAccessibility,
   onChangeTravel,
-  onChangeAccommodation,
 }: RequirementsPanelProps) {
   return (
     <div className="rounded-[20px] border border-[#E3E8F0] bg-[#F2F5F9] p-4">
-      <h3 className="mb-3 text-[9px] font-bold uppercase tracking-[0.22em] text-[#5B6B84]">
+      <h3 className="mb-4 text-[9px] font-bold uppercase tracking-[0.22em] text-[#5B6B84]">
         Requirements
       </h3>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         <div>
           <label
             htmlFor="dietary"
@@ -69,7 +65,7 @@ export default function RequirementsPanel({
             htmlFor="travel"
             className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5B6B84]"
           >
-            Travel Requirements
+            Travel &amp; Accommodation
           </label>
           <input
             type="text"
@@ -77,25 +73,7 @@ export default function RequirementsPanel({
             name="travel"
             value={travel}
             onChange={(e) => onChangeTravel(e.target.value)}
-            placeholder="e.g. Flight from London, arrival time"
-            className={whiteInputBase}
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="accommodation"
-            className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.14em] text-[#5B6B84]"
-          >
-            Accommodation Requirements
-          </label>
-          <input
-            type="text"
-            id="accommodation"
-            name="accommodation"
-            value={accommodation}
-            onChange={(e) => onChangeAccommodation(e.target.value)}
-            placeholder="e.g. Hotel needed, room preference"
+            placeholder="e.g. Flight from London, hotel needed"
             className={whiteInputBase}
           />
         </div>

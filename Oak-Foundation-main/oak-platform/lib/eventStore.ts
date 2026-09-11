@@ -148,7 +148,7 @@ export function findSeedById(id: string): SeedAttendee | undefined {
 }
 
 export function useEventStore() {
-  useSyncExternalStore(eventStore.subscribe, () => version);
+  useSyncExternalStore(eventStore.subscribe, () => version, () => version);
   return {
     records: eventStore.getRecords(),
     checkedInCount: eventStore.getCheckedInCount(),

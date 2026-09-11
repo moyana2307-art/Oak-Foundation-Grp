@@ -17,7 +17,7 @@ export default async function QrPage() {
 
   const payload = JSON.stringify({
     reference: session.reference,
-    event: "OAK Foundation Event 2026",
+    event: "OAK Partner Convening 2026",
     firstName: session.firstName,
     lastName: session.lastName,
     organisation: session.organisation,
@@ -60,11 +60,11 @@ export default async function QrPage() {
             <dl className="mt-2 space-y-1 text-[13px] text-[#43546C]">
               <div className="flex justify-between gap-3">
                 <dt className="text-[#6B7A90]">Event</dt>
-                <dd className="font-semibold">OAK Foundation Event</dd>
+                <dd className="font-semibold">OAK Partner Convening 2026</dd>
               </div>
               <div className="flex justify-between gap-3">
                 <dt className="text-[#6B7A90]">Dates</dt>
-                <dd className="font-semibold">9 – 11 Nov 2026</dd>
+                <dd className="font-semibold">9 – 11 March 2026</dd>
               </div>
               <div className="flex justify-between gap-3">
                 <dt className="text-[#6B7A90]">Venue</dt>

@@ -21,7 +21,7 @@ export default async function PartnerDetailPage({
 
   return (
     <main className="min-h-screen bg-[#F4F5F7]">
-      <div className="mx-auto max-w-[520px] lg:max-w-[640px] px-4 py-6 md:px-6">
+      <div className="mx-auto max-w-[520px] md:max-w-[640px] px-4 py-6 md:px-6">
         <nav className="mb-4">
           <Link href="/partners" className="inline-flex items-center gap-1 text-[13px] font-semibold text-[#2B5BBD] hover:underline">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>

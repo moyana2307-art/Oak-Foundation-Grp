@@ -5,7 +5,6 @@ import {
   CATEGORY_COLORS,
   CATEGORY_LABELS,
   CATEGORY_ORDER,
-  type DailyPost,
   type ScheduleBreak,
   type ScheduleEntry,
   type ScheduleSession,
@@ -13,7 +12,6 @@ import {
 import { SCHEDULE_DAYS, SEED_SCHEDULE } from "@/lib/schedule";
 
 type ProgrammeTabsProps = {
-  posts: DailyPost[];
   sessionName: string;
   sessionOrg: string;
 };
@@ -65,7 +63,7 @@ const RESOURCES = [
   { name: "Photo Gallery (High Res)", meta: "Gallery · All days", type: "gallery" as const },
 ];
 
-export default function ProgrammeTabs({ posts, sessionName, sessionOrg }: ProgrammeTabsProps) {
+export default function ProgrammeTabs({ sessionName, sessionOrg }: ProgrammeTabsProps) {
   const [view, setView] = useState<"schedule" | "docs">("schedule");
   const [activeDay, setActiveDay] = useState<number>(1);
 
@@ -91,7 +89,7 @@ export default function ProgrammeTabs({ posts, sessionName, sessionOrg }: Progra
           <Timeline entries={entries} />
         </section>
       ) : (
-        <DocsView posts={posts} sessionName={sessionName} sessionOrg={sessionOrg} />
+        <DocsView sessionName={sessionName} sessionOrg={sessionOrg} />
       )}
     </div>
   );
@@ -115,24 +113,24 @@ function DaySelector({
             role="tab"
             aria-selected={active}
             onClick={() => onDayChange(tab.day)}
-            className={`rounded-[18px] px-3 py-3 text-center transition ${
+            className={`rounded-[18px] px-2 py-2.5 text-center transition sm:px-3 sm:py-3 ${
               active
                 ? "bg-[#162E55] text-white shadow-[0_10px_20px_-12px_rgba(22,46,85,0.6)]"
                 : "bg-white text-[#162E55] ring-1 ring-[#E3E8EF] hover:bg-[#EEF1F5]"
             }`}
           >
             <span
-              className={`block text-[10px] font-extrabold uppercase tracking-[0.16em] ${
+              className={`block text-[9px] font-extrabold uppercase tracking-[0.16em] ${
                 active ? "text-[#A8BAD9]" : "text-[#8A97AB]"
               }`}
             >
               {tab.short}
             </span>
-            <span className="mt-1 block text-[17px] font-extrabold tracking-tight">
+            <span className="mt-1 block text-[15px] font-extrabold tracking-tight sm:text-[17px]">
               Day {tab.day}
             </span>
             <span
-              className={`mt-0.5 block text-[11px] font-semibold ${
+              className={`mt-0.5 block text-[10px] font-semibold ${
                 active ? "text-[#8FB1DE]" : "text-[#98A3B5]"
               }`}
             >
@@ -231,11 +229,9 @@ function BreakRow({ entry }: { entry: ScheduleBreak }) {
 }
 
 function DocsView({
-  posts,
   sessionName,
   sessionOrg,
 }: {
-  posts: DailyPost[];
   sessionName: string;
   sessionOrg: string;
 }) {
@@ -243,7 +239,7 @@ function DocsView({
     <div className="mt-4">
       <SessionNotesFeed authorName={sessionName} authorOrg={sessionOrg} />
       <SectionHeading>Gallery</SectionHeading>
-      <Gallery posts={posts} />
+      <Gallery />
       <SectionHeading>Key Takeaways</SectionHeading>
       <ol className="space-y-2.5">
         {TAKEAWAYS.map((item, i) => (
@@ -274,6 +270,7 @@ function DocsView({
             </div>
             <button
               type="button"
+              onClick={() => downloadResource(res)}
               aria-label={`Download ${res.name}`}
               className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#EEF1F5] text-[#162E55] transition hover:bg-[#162E55] hover:text-white"
             >
@@ -302,8 +299,8 @@ function SessionNotesFeed({ authorName, authorOrg }: { authorName: string; autho
       {
         author: authorName || "Attendee",
         org: authorOrg || "OAK Foundation",
-        day: "Day 2 · TUE",
-        time: now.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
+        day: eventDayLabel(),
+        time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false }),
         note: draft.trim(),
       },
       ...prev,
@@ -386,48 +383,28 @@ function SessionNotesFeed({ authorName, authorOrg }: { authorName: string; autho
   );
 }
 
-function Gallery({ posts }: { posts: DailyPost[] }) {
-  const urls = posts.flatMap((post) => post.photo_urls ?? []);
-  const labels: { day: string; label: string }[] = [
-    { day: "Day 1", label: "Opening plenary" },
-    { day: "Day 1", label: "Workshop floor" },
-    { day: "Day 1", label: "Welcome reception" },
-    { day: "Day 2", label: "Keynote" },
-    { day: "Day 2", label: "Advocacy lab" },
-    { day: "Day 2", label: "Featured panel" },
-    { day: "Day 3", label: "Breakouts" },
-    { day: "Day 3", label: "Closing plenary" },
-  ];
+const GALLERY_ITEMS: { src: string; day: string; label: string }[] = [
+  { src: "/1.jpeg", day: "Day 1", label: "Opening plenary" },
+  { src: "/2.jpeg", day: "Day 1", label: "Workshop floor" },
+  { src: "/3.jpeg", day: "Day 1", label: "Welcome reception" },
+  { src: "/4.jpeg", day: "Day 2", label: "Keynote" },
+  { src: "/5.jpeg", day: "Day 2", label: "Advocacy lab" },
+  { src: "/6.jpeg", day: "Day 3", label: "Breakouts" },
+];
+
+function Gallery() {
   return (
-    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
-      {labels.map((entry, i) => {
-        const url = urls[i];
-        return url ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={i}
-            src={url}
-            alt={entry.label}
-            loading="lazy"
-            className="aspect-[4/3] w-full rounded-[14px] object-cover"
-          />
-        ) : (
-          <div
-            key={i}
-            className="relative flex aspect-[4/3] flex-col items-center justify-center gap-1.5 overflow-hidden rounded-[14px] bg-gradient-to-br from-[#263D61] via-[#1D3150] to-[#162E55] text-white"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 text-[#8FB1DE]" aria-hidden>
-              <rect x="3" y="4" width="18" height="15" rx="3" />
-              <circle cx="9" cy="10" r="2" />
-              <path d="m6 17 4-4 2.5 2.5L16 12l3 4" />
-            </svg>
-            <p className="px-2 text-center text-[10px] font-bold uppercase tracking-[0.1em]">
-              {entry.day}
-            </p>
-            <p className="px-2 text-center text-[10px] text-[#A8BAD9]">{entry.label}</p>
-          </div>
-        );
-      })}
+    <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3">
+      {GALLERY_ITEMS.map((item) => (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          key={item.src}
+          src={item.src}
+          alt={`${item.day} — ${item.label}`}
+          loading="lazy"
+          className="aspect-[4/3] w-full rounded-[14px] object-cover"
+        />
+      ))}
     </div>
   );
 }
@@ -481,6 +458,41 @@ function FileIcon({ type }: { type: "pdf" | "doc" | "xls" | "gallery" }) {
       )}
     </svg>
   );
+}
+
+function downloadResource(res: { name: string; meta: string }) {
+  const content = [
+    "OAK Partner Convening 2026 — Resource",
+    "======================================",
+    "",
+    `Resource: ${res.name}`,
+    `Details:  ${res.meta}`,
+    "",
+    "Generated by the OAK Platform on " + new Date().toLocaleString() + ".",
+    "",
+    ...TAKEAWAYS.map((t) => `- ${t}`),
+  ].join("\n");
+  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${res.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function eventDayLabel(): string {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const start = new Date(2026, 2, 9);
+  const dayNumber = Math.min(
+    3,
+    Math.max(1, Math.round((today.getTime() - start.getTime()) / 86_400_000) + 1)
+  );
+  const day = SCHEDULE_DAYS.find((d) => d.day === dayNumber) ?? SCHEDULE_DAYS[0];
+  return `Day ${day.day} · ${day.short}`;
 }
 
 function initials(name: string): string {

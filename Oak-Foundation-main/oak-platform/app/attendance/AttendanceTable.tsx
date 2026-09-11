@@ -123,11 +123,11 @@ function Avatar({ name }: { name: string }) {
 }
 
 function formatTime(iso: string): string {
-  return new Date(iso).toLocaleDateString([], {
-    day: "numeric",
-    month: "short",
-  }) + " · " + new Date(iso).toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit",
-  });
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  return (
+    d.toLocaleDateString([], { day: "numeric", month: "short" }) +
+    " · " +
+    d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })
+  );
 }

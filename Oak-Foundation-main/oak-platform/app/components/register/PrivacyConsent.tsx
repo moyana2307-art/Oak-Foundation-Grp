@@ -21,23 +21,36 @@ export default function PrivacyConsent({
         />
         <span
           aria-hidden
-          className={`mt-[1px] flex h-[19px] w-[19px] shrink-0 items-center justify-center rounded-[6px] border bg-white transition ${
+          className={`mt-[1px] flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-[6px] border transition-colors duration-150 ${
             checked
-              ? "border-[#162E55] bg-[#162E55]"
-              : "border-[#C9D2E0]"
+              ? "border-[#162E55] bg-white"
+              : "border-[#C9D2E0] bg-white"
           } peer-focus-visible:ring-2 peer-focus-visible:ring-[#162E55]/30`}
         >
-          {checked && (
-            <svg viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" className="h-[12px] w-[12px]">
-              <path d="M5 12.5 10 17.5 19 7" />
-            </svg>
-          )}
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#162E55"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className={`h-[13px] w-[13px] transition-all duration-150 ${
+              checked ? "scale-100 opacity-100" : "scale-75 opacity-0"
+            }`}
+          >
+            <path d="M5 12.5 10 17.5 19 7" />
+          </svg>
         </span>
         <span className="text-[12px] leading-relaxed text-[#43546C]">
           I agree to OAK Foundation&apos;s{" "}
-          <span className="font-semibold underline decoration-[#5B6B84] underline-offset-2">
+          <a
+            href="/privacy"
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold underline decoration-[#5B6B84] underline-offset-2"
+          >
             privacy policy
-          </span>{" "}
+          </a>{" "}
           and consent to my registration data being used for event
           coordination.
         </span>

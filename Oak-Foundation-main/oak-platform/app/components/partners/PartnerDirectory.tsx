@@ -42,7 +42,7 @@ export default function PartnerDirectory() {
         </div>
       </div>
 
-      <div className="mt-3 flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Filter by region">
+      <div className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 no-scrollbar md:-mx-6 md:px-6" role="tablist" aria-label="Filter by region">
         {PARTNER_REGIONS.map((r) => (
           <button
             key={r}
@@ -100,7 +100,7 @@ function SubPartnersRow({ onSelect }: { onSelect: () => void }) {
           Quick access
         </span>
       </div>
-      <div className="mt-2 flex gap-2.5 overflow-x-auto pb-1">
+      <div className="-mx-4 mt-2 flex gap-2.5 overflow-x-auto px-4 pb-1 no-scrollbar md:-mx-6 md:px-6">
         {subPartners.map((partner) => (
           <Link
             key={partner.id}

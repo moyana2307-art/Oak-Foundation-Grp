@@ -24,7 +24,6 @@ export type RegistrationData = {
   dietary: string;
   accessibility: string;
   travel: string;
-  accommodation: string;
 };
 
 export type RegistrationErrors = Partial<

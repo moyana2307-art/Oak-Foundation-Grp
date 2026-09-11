@@ -36,7 +36,7 @@ export default async function ProgrammePage() {
 
   return (
     <main className="min-h-screen bg-[#F4F5F7]">
-      <div className="mx-auto max-w-[560px] lg:max-w-[760px] px-4 py-6 md:px-6">
+      <div className="mx-auto max-w-[560px] md:max-w-[760px] px-4 py-6 md:px-6">
         <header className="rounded-[24px] bg-gradient-to-br from-[#263D61] via-[#1D3150] to-[#162E55] px-6 py-8 shadow-[0_18px_40px_-18px_rgba(22,46,85,0.55)]">
           <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#8FB1DE]">
             OAK Partner Convening 2026
@@ -50,7 +50,6 @@ export default async function ProgrammePage() {
         </header>
 
         <ProgrammeTabs
-          posts={posts}
           sessionName={`${session.firstName} ${session.lastName}`.trim()}
           sessionOrg={session.organisation}
         />

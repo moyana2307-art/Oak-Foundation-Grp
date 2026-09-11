@@ -35,7 +35,7 @@ const stats: Stat[] = [
   },
   {
     value: "38",
-    label: "partners",
+    label: "Partners",
     icon: (
       <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" {...strokeProps}>
         <circle cx="6" cy="6.5" r="2.5" />
@@ -51,19 +51,19 @@ const stats: Stat[] = [
 export default function Statistics() {
   return (
     <section className="px-4 md:px-6">
-      <div className="mx-auto grid w-full max-w-[520px] grid-cols-3 gap-3">
+      <div className="mx-auto grid w-full max-w-[520px] grid-cols-3 gap-2.5 sm:gap-3">
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="flex flex-col items-start gap-[7px] rounded-[20px] bg-white px-3.5 py-4 shadow-[0_10px_25px_-14px_rgba(22,46,85,0.28)]"
+            className="flex flex-col items-center gap-[7px] rounded-[20px] bg-white px-3 py-3.5 text-center shadow-[0_10px_25px_-14px_rgba(22,46,85,0.28)] sm:px-3.5 sm:py-4"
           >
             <span className="text-[#162E55]" aria-hidden>
               {stat.icon}
             </span>
-            <span className="text-[22px] font-extrabold leading-none tracking-tight text-[#162E55]">
+            <span className="text-[19px] font-extrabold leading-none tracking-tight text-[#162E55] sm:text-[22px]">
               {stat.value}
             </span>
-            <span className="text-[11px] font-medium leading-none text-[#6B7A90]">
+            <span className="text-[10px] font-medium leading-none text-[#6B7A90] sm:text-[11px]">
               {stat.label}
             </span>
           </div>
