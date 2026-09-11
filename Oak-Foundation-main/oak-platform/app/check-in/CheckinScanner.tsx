@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ROLE_LABELS, type Role } from "@/app/components/register/types";
@@ -171,54 +172,68 @@ export default function CheckinScanner({
     }, 900);
   };
 
-  const startScanner = async () => {
-    setStarting(true);
-    setError(null);
-    setOutcome(null);
-    try {
-      const devices = await Html5Qrcode.getCameras();
-      if (devices.length === 0) {
-        setError(
-          "No camera was found on this device. Upload a photo of the QR badge, type the code, or use the simulate panel below."
+  useEffect(() => {
+    if (!starting) return;
+    let cancelled = false;
+
+    const run = async () => {
+      try {
+        const devices = await Html5Qrcode.getCameras();
+        if (cancelled) return;
+        if (devices.length === 0) {
+          setError(
+            "No camera was found on this device. Upload a photo of the QR badge, type the code, or use the simulate panel below."
+          );
+          return;
+        }
+        const scanner = new Html5Qrcode(SCAN_ID, {
+          formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
+          verbose: false,
+        });
+        scannerRef.current = scanner;
+        await scanner.start(
+          devices[0].id,
+          { fps: 10, qrbox: { width: 220, height: 220 } },
+          onScan,
+          () => {}
         );
-        return;
+        if (cancelled) {
+          await scanner.stop().catch(() => {});
+          return;
+        }
+        setScanning(true);
+      } catch (err) {
+        if (cancelled) return;
+        const name = (err as DOMException | null)?.name;
+        if (name === "NotAllowedError") {
+          setError(
+            "Camera access was blocked. Allow camera permission in your browser, or upload a QR photo instead."
+          );
+        } else if (
+          name === "NotFoundError" ||
+          name === "NotReadableError" ||
+          name === "OverconstrainedError"
+        ) {
+          setError(
+            "No working camera was detected. Upload a photo of the QR badge, type the code, or use the simulate panel below."
+          );
+        } else {
+          setError(
+            "Camera preview could not start. Upload a QR photo, type the code, or use the simulate panel below."
+          );
+          console.error("Scanner start failed", err);
+        }
+      } finally {
+        if (!cancelled) setStarting(false);
       }
-      const scanner = new Html5Qrcode(SCAN_ID, {
-        formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE],
-        verbose: false,
-      });
-      scannerRef.current = scanner;
-      await scanner.start(
-        devices[0].id,
-        { fps: 10, qrbox: { width: 220, height: 220 } },
-        onScan,
-        () => {}
-      );
-      setScanning(true);
-    } catch (err) {
-      const name = (err as DOMException | null)?.name;
-      if (name === "NotAllowedError") {
-        setError(
-          "Camera access was blocked. Allow camera permission in your browser, or upload a QR photo instead."
-        );
-      } else if (
-        name === "NotFoundError" ||
-        name === "NotReadableError" ||
-        name === "OverconstrainedError"
-      ) {
-        setError(
-          "No working camera was detected. Upload a photo of the QR badge, type the code, or use the simulate panel below."
-        );
-      } else {
-        setError(
-          "Camera preview could not start. Upload a QR photo, type the code, or use the simulate panel below."
-        );
-        console.error("Scanner start failed", err);
-      }
-    } finally {
-      setStarting(false);
-    }
-  };
+    };
+
+    run();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [starting]);
 
   const stopScanner = async () => {
     if (scannerRef.current?.isScanning) {
@@ -229,12 +244,14 @@ export default function CheckinScanner({
       }
     }
     setScanning(false);
+    setStarting(false);
   };
 
   const returnToScanner = async () => {
     setOutcome(null);
+    setError(null);
     if (!scanning) {
-      await startScanner();
+      setStarting(true);
     }
   };
 
@@ -449,6 +466,15 @@ export default function CheckinScanner({
           </svg>
           Scan Next Attendee
         </button>
+        <Link
+          href="/attendance"
+          className="mt-3 flex w-full items-center justify-center gap-1.5 text-[13px] font-semibold text-[#2B5BBD] hover:underline"
+        >
+          View attendance &amp; headcount
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5" aria-hidden>
+            <path d="M5 12h14m-6-6 6 6-6 6" />
+          </svg>
+        </Link>
       </div>
     );
   }
@@ -518,37 +544,74 @@ export default function CheckinScanner({
   return (
     <div className="mt-5 space-y-4">
       <div className="overflow-hidden rounded-[24px] border border-[#E3E8EF] bg-gradient-to-b from-[#0F1E38] to-[#0A1528] p-2 shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
-        <div className="relative flex h-[300px] flex-col items-center justify-center sm:h-[240px]">
-          <div className="pointer-events-none absolute inset-0 rounded-[16px] bg-black/30" aria-hidden />
-          <ViewFinderBrackets />
-          <span className="relative text-center">
-            <span className="block text-[14px] font-bold text-white">Position QR code within the frame</span>
-            <span className="mt-1 block text-[11px] text-[#A8BAD9]">Auto-detects as soon as it&apos;s in view</span>
-          </span>
+        <div className="relative h-[300px] overflow-hidden rounded-[16px] sm:h-[240px]">
+          <div
+            id={SCAN_ID}
+            className={starting || scanning ? "h-full w-full" : "hidden"}
+          />
+          {!starting && !scanning && (
+            <>
+              <div className="pointer-events-none absolute inset-0 bg-black/30" aria-hidden />
+              <ViewFinderBrackets />
+              <span className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                <span className="text-[14px] font-bold text-white">Position QR code within the frame</span>
+                <span className="mt-1 text-[11px] text-[#A8BAD9]">Auto-detects as soon as it&apos;s in view</span>
+              </span>
+            </>
+          )}
+          {starting && (
+            <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-5 w-5 animate-spin text-white" aria-hidden>
+                <path d="M21 12a9 9 0 1 1-6.2-8.56" />
+              </svg>
+              <span className="text-[13px] font-bold text-white">Requesting camera access…</span>
+            </span>
+          )}
         </div>
         <div className="mt-1 flex items-center justify-center gap-2 rounded-[14px] border-t border-white/10 bg-white/5 py-2.5">
           <ScanMiniIcon />
           <span className="text-[11px] font-semibold text-[#B8C6DE]">
-            Hold camera steady · Auto-scans in 1–2 seconds
+            {scanning
+              ? "Live preview · auto-scans in 1–2 seconds"
+              : "Hold camera steady · Auto-scans in 1–2 seconds"}
           </span>
         </div>
-        <button
-          type="button"
-          onClick={startScanner}
-          disabled={starting}
-          className="mt-2 h-[50px] w-full rounded-[14px] bg-gradient-to-b from-[#263D61] to-[#162E55] text-[14px] font-bold tracking-[0.06em] text-white shadow-[0_12px_24px_-12px_rgba(22,46,85,0.6)] transition hover:to-[#1F3A6B] disabled:opacity-60"
-        >
-          {starting ? "Starting camera…" : "START SCANNING"}
-        </button>
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={busy}
-          className="mt-2 inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] border border-white/15 bg-white/5 text-[13px] font-bold text-[#B8C6DE] transition hover:bg-white/10 disabled:opacity-60"
-        >
-          <UploadIcon />
-          Upload QR photo from device
-        </button>
+        {!scanning ? (
+          <>
+            <button
+              type="button"
+              onClick={() => {
+                setError(null);
+                setOutcome(null);
+                setStarting(true);
+              }}
+              disabled={starting}
+              className="mt-2 h-[50px] w-full rounded-[14px] bg-gradient-to-b from-[#263D61] to-[#162E55] text-[14px] font-bold tracking-[0.06em] text-white shadow-[0_12px_24px_-12px_rgba(22,46,85,0.6)] transition hover:to-[#1F3A6B] disabled:opacity-60"
+            >
+              {starting ? "Starting camera…" : "START SCANNING"}
+            </button>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={busy}
+              className="mt-2 inline-flex h-[46px] w-full items-center justify-center gap-2 rounded-[14px] border border-white/15 bg-white/5 text-[13px] font-bold text-[#B8C6DE] transition hover:bg-white/10 disabled:opacity-60"
+            >
+              <UploadIcon />
+              Upload QR photo from device
+            </button>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={() => {
+              setOutcome(null);
+              stopScanner();
+            }}
+            className="mt-2 h-[46px] w-full rounded-[14px] border border-white/15 bg-white/5 text-[13px] font-bold text-[#B8C6DE] transition hover:bg-white/10"
+          >
+            Stop scanning
+          </button>
+        )}
       </div>
 
       <div className="rounded-[20px] border border-[#E3E8EF] bg-white p-4 shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
@@ -625,24 +688,6 @@ export default function CheckinScanner({
         />
         <div id={FILE_SCAN_ID} className="hidden" />
       </div>
-
-      {scanning && (
-        <div className="overflow-hidden rounded-[24px] border border-[#E3E8EF] bg-black shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
-          <div id={SCAN_ID} className="w-full" />
-          <div className="flex gap-2 bg-white p-3">
-            <button
-              type="button"
-              onClick={() => {
-                setOutcome(null);
-                stopScanner();
-              }}
-              className="h-[46px] flex-1 rounded-[12px] border border-[#C9D2E0] bg-white text-[13px] font-semibold text-[#162E55] transition hover:bg-[#F2F5F9]"
-            >
-              Stop scanning
-            </button>
-          </div>
-        </div>
-      )}
 
       {error && !outcome && (
         <div className="rounded-[16px] border border-[#F0C9C9] bg-[#FCEBEB] p-4 text-[13px] text-[#7A1F1F]">
@@ -804,6 +849,7 @@ function RoleBadge({ role }: { role: Role }) {
 }
 
 const ROLE_COLORS: Record<Role, [string, string]> = {
+  admin: ["#E5E8EE", "#162E55"],
   partner: ["#E1E8F5", "#2B5BBD"],
   oak_staff: ["#E7F4EC", "#1E9E62"],
   coordination_team: ["#FBF0DA", "#C08A1A"],

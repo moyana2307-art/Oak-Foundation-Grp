@@ -1,4 +1,5 @@
 export type Role =
+  | "admin"
   | "partner"
   | "oak_staff"
   | "coordination_team"
@@ -6,6 +7,7 @@ export type Role =
   | "observer";
 
 export const ROLE_LABELS: Record<Role, string> = {
+  admin: "Admin",
   partner: "Partner",
   oak_staff: "OAK Staff",
   coordination_team: "Coordination Team",

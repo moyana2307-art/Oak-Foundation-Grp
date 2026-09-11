@@ -5,7 +5,7 @@ import AttendanceDashboard, { type Row } from "./AttendanceDashboard";
 import type { Role } from "@/app/components/register/types";
 
 export default async function AttendancePage() {
-  const session = await requireRole(["oak_staff", "coordination_team", "presenter", "observer", "partner"]);
+  const session = await requireRole(["oak_staff", "coordination_team", "partner"]);
   if (!session) {
     redirect("/");
   }

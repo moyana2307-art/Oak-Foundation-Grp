@@ -87,6 +87,16 @@ export const SEED_ATTENDEES: SeedAttendee[] = [
     nextSessionTime: "09:30",
     venue: "Main Hall A",
   },
+  {
+    id: "seed-admin",
+    name: "Event Admin",
+    organisation: "OAK Foundation",
+    role: "admin",
+    reference: "OAK-2026-9KDM-5WQA",
+    nextSession: "Opening Plenary",
+    nextSessionTime: "09:30",
+    venue: "Main Hall A",
+  },
 ];
 
 export const CURRENT_SESSION = {

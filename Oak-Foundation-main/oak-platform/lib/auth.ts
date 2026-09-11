@@ -59,8 +59,8 @@ export async function getSession(): Promise<SessionAttendee | null> {
 
 export async function requireRole(roles: Role[]) {
   const session = await getSession();
-  if (!session || !roles.includes(session.role)) {
-    return null;
-  }
+  if (!session) return null;
+  if (session.role === "admin") return session;
+  if (!roles.includes(session.role)) return null;
   return session;
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import AppNav from "./components/AppNav";
 import ShellMain from "./components/ShellMain";
+import { getSession } from "@/lib/auth";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -16,13 +17,14 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const session = await getSession();
   return (
     <html
       lang="en"
       className={`${jakarta.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <AppNav />
+        <AppNav role={session?.role ?? null} />
         <ShellMain>{children}</ShellMain>
       </body>
     </html>

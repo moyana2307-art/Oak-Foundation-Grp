@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { PAGE_ACCESS } from "@/lib/access";
+import type { Role } from "./register/types";
 
 const NAV_ITEMS = [
   { href: "/", label: "Register", icon: <RegisterIcon /> },
@@ -11,18 +13,37 @@ const NAV_ITEMS = [
   { href: "/attendance", label: "Attendance", icon: <ListIcon /> },
 ] as const;
 
-export default function AppNav() {
+type NavItem = (typeof NAV_ITEMS)[number];
+
+function visibleItems(role: Role | null): NavItem[] {
+  if (!role) {
+    return NAV_ITEMS.filter((item) => item.href === "/");
+  }
+  if (role === "admin") {
+    return [...NAV_ITEMS];
+  }
+  return NAV_ITEMS.filter(
+    (item) =>
+      item.href === "/" ||
+      item.href === "/check-in" ||
+      item.href === "/programme" ||
+      (item.href === "/attendance" &&
+        (PAGE_ACCESS["/attendance"]?.includes(role) ?? false))
+  );
+}
+
+export default function AppNav({ role }: { role?: Role | null }) {
+  const items = visibleItems(role ?? null);
   return (
     <>
-      <DesktopSidebar />
-      <MobileHeader />
+      <DesktopSidebar items={items} />
+      <MobileHeader items={items} />
     </>
   );
 }
 
-function DesktopSidebar() {
+function DesktopSidebar({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
-  const items = NAV_ITEMS;
 
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-[264px] flex-col border-r border-[#E3E8EF] bg-white shadow-[4px_0_24px_-12px_rgba(10,25,55,0.15)] md:flex">
@@ -80,7 +101,7 @@ function DesktopSidebar() {
   );
 }
 
-function MobileHeader() {
+function MobileHeader({ items }: { items: NavItem[] }) {
   return (
     <>
       <header className="sticky top-0 z-30 bg-[#162E55] shadow-[0_4px_18px_-8px_rgba(15,30,60,0.5)] md:hidden">
@@ -104,24 +125,29 @@ function MobileHeader() {
         </div>
       </header>
 
-      <BottomTabBar />
+      <BottomTabBar items={items} />
     </>
   );
 }
 
-function BottomTabBar() {
+function BottomTabBar({ items }: { items: NavItem[] }) {
   const pathname = usePathname();
   if (pathname === "/" || pathname.startsWith("/register")) {
     return null;
   }
-  const items = NAV_ITEMS;
+  const gridCols =
+    items.length === 5
+      ? "grid-cols-5"
+      : items.length === 4
+        ? "grid-cols-4"
+        : "grid-cols-3";
 
   return (
     <nav
       aria-label="Primary"
       className="fixed inset-x-0 bottom-0 z-30 border-t border-[#E3E8EF] bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_-16px_rgba(22,46,85,0.25)] md:hidden"
     >
-      <div className="mx-auto grid h-[64px] w-full max-w-[560px] grid-cols-5">
+      <div className={`mx-auto grid h-[64px] w-full max-w-[560px] ${gridCols}`}>
         {items.map((item) => {
           const active =
             item.href === "/"

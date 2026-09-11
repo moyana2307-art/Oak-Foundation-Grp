@@ -2,12 +2,18 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
 import QrDownloadButton from "../components/QrDownloadButton";
-import { getSession } from "@/lib/auth";
+import { getSession, ROLE_HOME, clearSessionCookie } from "@/lib/auth";
 import { ROLE_LABELS, type Role } from "../components/register/types";
 
 export default async function PassPage() {
   const session = await getSession();
   if (!session) {
+    redirect("/");
+  }
+
+  async function signOut() {
+    "use server";
+    await clearSessionCookie();
     redirect("/");
   }
 
@@ -22,6 +28,16 @@ export default async function PassPage() {
 
   const name = `${session.firstName} ${session.lastName}`;
   const roleLabel = ROLE_LABELS[session.role as Role] ?? session.role;
+
+  const home = ROLE_HOME[session.role as Role];
+  const homeLabels: Partial<Record<Role, string>> = {
+    admin: "View Attendance",
+    partner: "View My Pass",
+    oak_staff: "Go to Programme",
+    coordination_team: "View Attendance",
+    presenter: "Go to Programme",
+    observer: "Go to Programme",
+  };
 
   return (
     <main className="min-h-screen bg-[#F4F5F7]">
@@ -80,6 +96,16 @@ export default async function PassPage() {
 
         <QrDownloadButton value={payload} />
 
+        <Link
+          href={home}
+          className="flex h-[54px] w-full items-center justify-center gap-2 rounded-[14px] border border-[#C9D2E0] bg-white text-[14px] font-bold text-[#162E55] transition hover:bg-[#F2F5F9]"
+        >
+          {homeLabels[session.role as Role] ?? "Continue"}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
+            <path d="M5 12h14m-6-6 6 6-6 6" />
+          </svg>
+        </Link>
+
         <div className="flex justify-center pb-1 pt-1">
           <Link
             href="/"
@@ -91,6 +117,15 @@ export default async function PassPage() {
             Register another attendee
           </Link>
         </div>
+
+        <form action={signOut} className="flex justify-center">
+          <button
+            type="submit"
+            className="text-[12px] font-semibold text-[#8A97AB] hover:text-[#162E55]"
+          >
+            Sign out
+          </button>
+        </form>
       </div>
     </main>
   );
