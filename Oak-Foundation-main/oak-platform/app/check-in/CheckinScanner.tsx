@@ -544,7 +544,7 @@ export default function CheckinScanner({
   return (
     <div className="mt-5 space-y-4">
       <div className="overflow-hidden rounded-[24px] border border-[#E3E8EF] bg-gradient-to-b from-[#0F1E38] to-[#0A1528] p-2 shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
-        <div className="relative h-[300px] overflow-hidden rounded-[16px] sm:h-[240px]">
+        <div className="relative h-[550px] overflow-hidden rounded-[16px] sm:h-[500px]">
           <div
             id={SCAN_ID}
             className={starting || scanning ? "h-full w-full" : "hidden"}
