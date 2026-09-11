@@ -94,11 +94,7 @@ export default function RegistrationForm() {
 
     try {
       const origin = window.location.origin;
-      const action = registerAttendee(data, consent, origin);
-      const timeout = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("slow")), 20000)
-      );
-      const result = await Promise.race([action, timeout]);
+      const result = await registerAttendee(data, consent, origin);
 
       if (!result.ok) {
         setSubmitting(false);
@@ -109,11 +105,12 @@ export default function RegistrationForm() {
       // Session is set; take the user to their entry pass.
       setRedirecting(true);
       router.push("/pass");
-    } catch {
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error ? err.message : "Registration could not be completed.";
+      console.error("registerAttendee client error:", err);
       setSubmitting(false);
-      setSubmitError(
-        "Registration could not be completed. Please check your connection and try again."
-      );
+      setSubmitError(msg || "Registration could not be completed. Please try again.");
     }
   };
 

@@ -35,37 +35,37 @@ export async function registerAttendee(
   consent: boolean,
   origin: string
 ): Promise<RegisterResult> {
-  if (!consent) {
-    return { ok: false, error: "Consent is required to register." };
-  }
-
-  if (!data.firstName.trim() || !data.lastName.trim() || !data.organisation.trim()) {
-    return { ok: false, error: "Please complete the required fields." };
-  }
-
-  if (!isRole(data.role)) {
-    return { ok: false, error: "Please select a valid role." };
-  }
-
-  if (!emailPattern.test(data.email.trim())) {
-    return { ok: false, error: "Please enter a valid email address." };
-  }
-
-  if (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-  ) {
-    console.error(
-      "Missing Supabase env vars: NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
-    );
-    return {
-      ok: false,
-      error:
-        "The registration service is not configured on this server. Please contact the coordination team.",
-    };
-  }
-
   try {
+    if (!consent) {
+      return { ok: false, error: "Consent is required to register." };
+    }
+
+    if (!data.firstName.trim() || !data.lastName.trim() || !data.organisation.trim()) {
+      return { ok: false, error: "Please complete the required fields." };
+    }
+
+    if (!isRole(data.role)) {
+      return { ok: false, error: "Please select a valid role." };
+    }
+
+    if (!emailPattern.test(data.email.trim())) {
+      return { ok: false, error: "Please enter a valid email address." };
+    }
+
+    if (
+      !process.env.NEXT_PUBLIC_SUPABASE_URL ||
+      !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+    ) {
+      console.error(
+        "Missing Supabase env vars: NEXT_PUBLIC_SUPABASE_URL / NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY"
+      );
+      return {
+        ok: false,
+        error:
+          "The registration service is not configured on this server. Please contact the coordination team.",
+      };
+    }
+
     const supabase = await createClient();
 
     let reference = generateReference();
@@ -140,9 +140,10 @@ export async function registerAttendee(
     };
   } catch (err) {
     console.error("Unexpected error registering attendee:", err);
+    const detail = err instanceof Error ? err.message : String(err);
     return {
       ok: false,
-      error: "Registration could not be completed. Please try again.",
+      error: `Registration failed: ${detail}`,
     };
   }
 }
