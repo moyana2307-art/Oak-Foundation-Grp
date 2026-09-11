@@ -92,18 +92,29 @@ export default function RegistrationForm() {
     setSubmitting(true);
     setSubmitError(null);
 
-    const origin = window.location.origin;
-    const result = await registerAttendee(data, consent, origin);
+    try {
+      const origin = window.location.origin;
+      const action = registerAttendee(data, consent, origin);
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("slow")), 20000)
+      );
+      const result = await Promise.race([action, timeout]);
 
-    if (!result.ok) {
+      if (!result.ok) {
+        setSubmitting(false);
+        setSubmitError(result.error ?? "Registration failed. Please try again.");
+        return;
+      }
+
+      // Session is set; take the user to their entry pass.
+      setRedirecting(true);
+      router.push("/pass");
+    } catch {
       setSubmitting(false);
-      setSubmitError(result.error ?? "Registration failed. Please try again.");
-      return;
+      setSubmitError(
+        "Registration could not be completed. Please check your connection and try again."
+      );
     }
-
-    // Session is set; take the user to their entry pass.
-    setRedirecting(true);
-    router.push("/pass");
   };
 
   return (
