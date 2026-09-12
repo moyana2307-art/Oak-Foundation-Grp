@@ -2,6 +2,8 @@
 
 import { useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import { Icon } from "@iconify/react/dist/offline";
+import download from "@iconify/icons-lucide/download";
 import { exportSvgAsPng } from "@/lib/qrImage";
 
 type QrCardProps = {
@@ -39,9 +41,7 @@ export default function QrCard({
         onClick={downloadPNG}
         className="mt-4 inline-flex h-[48px] w-full items-center justify-center gap-2 rounded-[13px] bg-[#1C355D] text-[14px] font-semibold text-white transition hover:bg-[#1F3A6B]"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
-          <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-        </svg>
+        <Icon icon={download} className="h-4 w-4" aria-hidden />
         {downloadLabel}
       </button>
       {showPrint && (

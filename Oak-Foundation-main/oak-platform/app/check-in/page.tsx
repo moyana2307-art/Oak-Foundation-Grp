@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+import { Icon } from "@iconify/react/dist/offline";
+import mapPin from "@iconify/icons-lucide/map-pin";
 import CheckinScanner from "./CheckinScanner";
 import { createClient } from "@/lib/supabase/server";
 import { requireRole } from "@/lib/auth";
@@ -78,10 +80,7 @@ export default async function CheckinPage() {
             Scan an attendee QR code to check them in.
           </p>
           <p className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-[12px] font-semibold text-white ring-1 ring-white/20">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5" aria-hidden>
-              <path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11Z" />
-              <circle cx="12" cy="10" r="2.5" />
-            </svg>
+            <Icon icon={mapPin} className="h-3.5 w-3.5" aria-hidden />
             Hall 1
           </p>
         </header>

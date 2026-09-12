@@ -1,3 +1,6 @@
+import { Icon } from "@iconify/react/dist/offline";
+import check from "@iconify/icons-lucide/check";
+
 type PrivacyConsentProps = {
   checked: boolean;
   error?: string;
@@ -27,19 +30,13 @@ export default function PrivacyConsent({
               : "border-[#C9D2E0] bg-white"
           } peer-focus-visible:ring-2 peer-focus-visible:ring-[#162E55]/30`}
         >
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="#162E55"
-            strokeWidth="3"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={`h-[13px] w-[13px] transition-all duration-150 ${
+          <Icon
+            icon={check}
+            className={`h-[13px] w-[13px] transition-all duration-150 text-[#162E55] ${
               checked ? "scale-100 opacity-100" : "scale-75 opacity-0"
             }`}
-          >
-            <path d="M5 12.5 10 17.5 19 7" />
-          </svg>
+            aria-hidden
+          />
         </span>
         <span className="text-[12px] leading-relaxed text-[#43546C]">
           I agree to OAK Foundation&apos;s{" "}

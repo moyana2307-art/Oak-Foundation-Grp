@@ -2,6 +2,10 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { Icon } from "@iconify/react/dist/offline";
+import chevronRight from "@iconify/icons-lucide/chevron-right";
+import globe from "@iconify/icons-lucide/globe";
+import search from "@iconify/icons-lucide/search";
 import { PARTNERS, PARTNER_REGIONS, type PartnerProfile } from "./partnerData";
 
 export default function PartnerDirectory() {
@@ -27,10 +31,7 @@ export default function PartnerDirectory() {
     <div className="mt-5">
       <div className="rounded-[16px] border border-[#E3E8EF] bg-white px-4 py-1 shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
         <div className="flex items-center gap-2.5">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#98A3B5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
-            <circle cx="11" cy="11" r="7" />
-            <path d="m20 20-3.5-3.5" />
-          </svg>
+          <Icon icon={search} className="h-4 w-4 text-[#98A3B5]" aria-hidden />
           <input
             type="search"
             value={query}
@@ -135,9 +136,7 @@ function PartnerCard({ partner }: { partner: PartnerProfile }) {
           <h2 className="truncate text-[15px] font-bold text-[#162E55]">
             {partner.name}
           </h2>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#8A97AB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0" aria-hidden>
-            <path d="M9 6l6 6-6 6" />
-          </svg>
+          <Icon icon={chevronRight} className="h-4 w-4 shrink-0 text-[#8A97AB]" aria-hidden />
         </div>
         <p className="mt-0.5 truncate text-[12px] text-[#5B6B84]">
           {partner.region} &middot; {partner.kind} &middot; {partner.focus}
@@ -146,10 +145,7 @@ function PartnerCard({ partner }: { partner: PartnerProfile }) {
           Partner since {partner.since}
         </p>
         <p className="mt-0.5 flex items-center gap-1 text-[11px] text-[#2B5BBD]">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3" aria-hidden>
-            <circle cx="12" cy="12" r="9" />
-            <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
-          </svg>
+          <Icon icon={globe} className="h-3 w-3" aria-hidden />
           {partner.website}
         </p>
       </div>

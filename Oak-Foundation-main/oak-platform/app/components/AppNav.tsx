@@ -2,15 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Icon } from "@iconify/react/dist/offline";
+import userPlus from "@iconify/icons-lucide/user-plus";
+import scan from "@iconify/icons-lucide/scan";
+import calendarDays from "@iconify/icons-lucide/calendar-days";
+import building2 from "@iconify/icons-lucide/building-2";
+import list from "@iconify/icons-lucide/list";
 import { PAGE_ACCESS } from "@/lib/access";
 import type { Role } from "./register/types";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Register", icon: <RegisterIcon /> },
-  { href: "/check-in", label: "Check In", icon: <ScanIcon /> },
-  { href: "/programme", label: "Programme", icon: <CalendarIcon /> },
-  { href: "/partners", label: "Partners", icon: <BuildingIcon /> },
-  { href: "/attendance", label: "Attendance", icon: <ListIcon /> },
+  { href: "/", label: "Register", icon: <Icon icon={userPlus} className="h-[19px] w-[19px]" aria-hidden /> },
+  { href: "/check-in", label: "Check In", icon: <Icon icon={scan} className="h-[19px] w-[19px]" aria-hidden /> },
+  { href: "/programme", label: "Programme", icon: <Icon icon={calendarDays} className="h-[19px] w-[19px]" aria-hidden /> },
+  { href: "/partners", label: "Partners", icon: <Icon icon={building2} className="h-[19px] w-[19px]" aria-hidden /> },
+  { href: "/attendance", label: "Attendance", icon: <Icon icon={list} className="h-[19px] w-[19px]" aria-hidden /> },
 ] as const;
 
 type NavItem = (typeof NAV_ITEMS)[number];
@@ -178,47 +184,3 @@ function BottomTabBar({ items }: { items: NavItem[] }) {
   );
 }
 
-function RegisterIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="h-[19px] w-[19px]" aria-hidden>
-      <path d="M15 4h4a1 1 0 0 1 1 1v4" />
-      <path d="M9 4H5a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4" />
-      <path d="M12 8v8M8 12h8" />
-    </svg>
-  );
-}
-
-function ScanIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="h-[19px] w-[19px]" aria-hidden>
-      <path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2" />
-      <rect x="9" y="9" width="6" height="6" rx="1" />
-    </svg>
-  );
-}
-
-function CalendarIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="h-[19px] w-[19px]" aria-hidden>
-      <rect x="4" y="5" width="16" height="15" rx="3" />
-      <path d="M8 3v4M16 3v4M4 10h16" />
-    </svg>
-  );
-}
-
-function BuildingIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="h-[19px] w-[19px]" aria-hidden>
-      <path d="M3 21h18M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16" />
-      <path d="M9 7h2M13 7h2M9 11h2M13 11h2M9 15h2M13 15h2" />
-    </svg>
-  );
-}
-
-function ListIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="h-[19px] w-[19px]" aria-hidden>
-      <path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01" />
-    </svg>
-  );
-}

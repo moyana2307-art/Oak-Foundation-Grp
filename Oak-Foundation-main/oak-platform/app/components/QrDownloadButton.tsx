@@ -2,6 +2,8 @@
 
 import { useRef } from "react";
 import { QRCodeSVG } from "qrcode.react";
+import { Icon } from "@iconify/react/dist/offline";
+import downloadIcon from "@iconify/icons-lucide/download";
 import { exportSvgAsPng } from "@/lib/qrImage";
 
 export default function QrDownloadButton({
@@ -30,9 +32,7 @@ export default function QrDownloadButton({
         onClick={download}
         className="flex h-[54px] w-full items-center justify-center gap-2 rounded-[14px] bg-[#162E55] text-[14px] font-bold text-white transition hover:bg-[#1F3A6B]"
       >
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
-          <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-        </svg>
+        <Icon icon={downloadIcon} className="h-5 w-5" aria-hidden />
         {label}
       </button>
     </>

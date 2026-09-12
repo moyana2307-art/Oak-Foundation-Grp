@@ -1,5 +1,9 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
+import { Icon } from "@iconify/react/dist/offline";
+import chevronLeft from "@iconify/icons-lucide/chevron-left";
+import globe from "@iconify/icons-lucide/globe";
+import mail from "@iconify/icons-lucide/mail";
 import { requireRole } from "@/lib/auth";
 import { PARTNERS } from "@/app/components/partners/partnerData";
 
@@ -24,9 +28,7 @@ export default async function PartnerDetailPage({
       <div className="mx-auto max-w-[520px] md:max-w-[640px] px-4 py-6 md:px-6">
         <nav className="mb-4">
           <Link href="/partners" className="inline-flex items-center gap-1 text-[13px] font-semibold text-[#2B5BBD] hover:underline">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
+            <Icon icon={chevronLeft} className="h-4 w-4" aria-hidden />
             Partner Directory
           </Link>
         </nav>
@@ -70,19 +72,14 @@ export default async function PartnerDetailPage({
               rel="noopener noreferrer"
               className="inline-flex h-[46px] items-center justify-center gap-2 rounded-[12px] bg-[#162E55] text-[13px] font-semibold text-white transition hover:bg-[#1F3A6B]"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
-                <circle cx="12" cy="12" r="9" />
-                <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" />
-              </svg>
+              <Icon icon={globe} className="h-4 w-4" aria-hidden />
               Visit Website
             </a>
             <a
               href={`mailto:${partner.contactEmail}`}
               className="inline-flex h-[46px] items-center justify-center gap-2 rounded-[12px] border border-[#C9D2E0] bg-white text-[13px] font-semibold text-[#162E55] transition hover:bg-[#F2F5F9]"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
-                <path d="M4 6h16v12H4zM4 7l8 6 8-6" />
-              </svg>
+              <Icon icon={mail} className="h-4 w-4" aria-hidden />
               Send Message
             </a>
           </div>

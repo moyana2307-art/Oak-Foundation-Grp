@@ -3,6 +3,17 @@
 import Link from "next/link";
 import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Icon } from "@iconify/react/dist/offline";
+import checkCircle from "@iconify/icons-lucide/check-circle";
+import clock from "@iconify/icons-lucide/clock";
+import loader2 from "@iconify/icons-lucide/loader-2";
+import mapPin from "@iconify/icons-lucide/map-pin";
+import scan from "@iconify/icons-lucide/scan";
+import triangleAlert from "@iconify/icons-lucide/alert-triangle";
+import upload from "@iconify/icons-lucide/upload";
+import users from "@iconify/icons-lucide/users";
+import x from "@iconify/icons-lucide/x";
+import xCircle from "@iconify/icons-lucide/x-circle";
 import { ROLE_LABELS, type Role } from "@/app/components/register/types";
 import {
   CURRENT_SESSION,
@@ -42,6 +53,34 @@ const DEFAULT_SESSION = { title: "Opening Plenary", time: "09:30", venue: "Main 
 const SCAN_ID = "checkin-reader";
 const FILE_SCAN_ID = "checkin-file-reader";
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+
+function pickCamera(devices: { id: string; label?: string }[]) {
+  if (devices.length === 0) return null;
+  const rear = devices.find((d) => {
+    const label = String(d.label ?? "").toLowerCase();
+    return (
+      label === "environment" ||
+      label.includes("back") ||
+      label.includes("rear") ||
+      label.includes("tráiler") ||
+      label.includes("posterior")
+    );
+  });
+  if (rear) return rear.id;
+  const front = devices.findIndex((d) => {
+    const label = String(d.label ?? "").toLowerCase();
+    return (
+      label.includes("front") ||
+      label.includes("user") ||
+      label.includes("selfie")
+    );
+  });
+  if (front !== -1) {
+    const fallback = devices.find((_, i) => i !== front);
+    return fallback?.id ?? devices[0].id;
+  }
+  return devices[0].id;
+}
 
 export default function CheckinScanner({
   recent,
@@ -191,12 +230,29 @@ export default function CheckinScanner({
           verbose: false,
         });
         scannerRef.current = scanner;
-        await scanner.start(
-          devices[0].id,
-          { fps: 10, qrbox: { width: 220, height: 220 } },
-          onScan,
-          () => {}
-        );
+
+        // Prefer the rear (environment) camera — required on mobile, where the
+        // front camera is usually enumerated first.
+        try {
+          await scanner.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 220, height: 220 } },
+            onScan,
+            () => {}
+          );
+        } catch (startErr) {
+          if (cancelled) throw startErr;
+          // Some desktop browsers / webviews don't honour facingMode, so fall
+          // back to a concrete device, preferring the rear one by label.
+          const cameraId = pickCamera(devices);
+          if (!cameraId) throw startErr;
+          await scanner.start(
+            cameraId,
+            { fps: 10, qrbox: { width: 220, height: 220 } },
+            onScan,
+            () => {}
+          );
+        }
         if (cancelled) {
           await scanner.stop().catch(() => {});
           return;
@@ -363,20 +419,14 @@ export default function CheckinScanner({
           />
           <div className="flex items-center gap-4">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-white/15 ring-1 ring-white/20">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden>
-                <circle cx="12" cy="12" r="9" />
-                <path d="M8.5 12.5 11 15l4.5-5.5" />
-              </svg>
+              <Icon icon={checkCircle} className="h-6 w-6" aria-hidden />
             </span>
             <div>
               <p className="text-[21px] font-extrabold leading-tight text-white">
                 Checked In Successfully
               </p>
               <p className="mt-1 inline-flex items-center gap-1.5 text-[13px] font-semibold text-white/85">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5" aria-hidden>
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 6v6l4 2" />
-                </svg>
+                <Icon icon={clock} className="h-3.5 w-3.5" aria-hidden />
                 {longDate(outcome.person.time)}
               </p>
             </div>
@@ -402,9 +452,7 @@ export default function CheckinScanner({
           <div className="grid grid-cols-2 gap-4">
             <div className="rounded-[14px] bg-[#F4F5F7] p-4">
               <p className="inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#8A97AB]">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3" aria-hidden>
-                  <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
-                </svg>
+                <Icon icon={scan} className="h-3 w-3" aria-hidden />
                 Next Session
               </p>
               <p className="mt-2 text-[15px] font-extrabold leading-snug text-[#162E55]">
@@ -413,10 +461,7 @@ export default function CheckinScanner({
             </div>
             <div className="rounded-[14px] bg-[#F4F5F7] p-4">
               <p className="inline-flex items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.18em] text-[#8A97AB]">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3 w-3" aria-hidden>
-                  <path d="M12 3 2 20h20L12 3Z" />
-                  <circle cx="12" cy="14" r="3" />
-                </svg>
+                <Icon icon={mapPin} className="h-3 w-3" aria-hidden />
                 Venue
               </p>
               <p className="mt-2 text-[15px] font-extrabold leading-snug text-[#162E55]">
@@ -429,12 +474,7 @@ export default function CheckinScanner({
         {/* Block 3 — Live Event Status */}
         <div className="rounded-[20px] border border-[#E3E8EF] bg-white p-6 shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
           <p className="inline-flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.2em] text-[#8A97AB]">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5" aria-hidden>
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-              <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-            </svg>
+            <Icon icon={users} className="h-3.5 w-3.5" aria-hidden />
             Live Event Status
           </p>
           <div className="mt-3 flex items-center gap-2">
@@ -460,10 +500,7 @@ export default function CheckinScanner({
           onClick={returnToScanner}
           className="flex h-[54px] w-full items-center justify-center gap-2 rounded-[14px] bg-[#162E55] text-[14px] font-bold text-white transition hover:bg-[#1F3A6B]"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
-            <path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2" />
-            <rect x="9" y="9" width="6" height="6" rx="1" />
-          </svg>
+          <Icon icon={scan} className="h-5 w-5" aria-hidden />
           Scan Next Attendee
         </button>
         <Link
@@ -471,9 +508,7 @@ export default function CheckinScanner({
           className="mt-3 flex w-full items-center justify-center gap-1.5 text-[13px] font-semibold text-[#2B5BBD] hover:underline"
         >
           View attendance &amp; headcount
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5" aria-hidden>
-            <path d="M5 12h14m-6-6 6 6-6 6" />
-          </svg>
+          <Icon icon={scan} className="h-3.5 w-3.5" aria-hidden />
         </Link>
       </div>
     );
@@ -485,10 +520,7 @@ export default function CheckinScanner({
         <div className="overflow-hidden rounded-[24px] bg-gradient-to-br from-[#C24141] via-[#9C3434] to-[#6E2222] p-5 text-white shadow-[0_18px_40px_-18px_rgba(110,34,34,0.6)]">
           <div className="flex items-center gap-3">
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/25">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6" aria-hidden>
-                <circle cx="12" cy="12" r="9" />
-                <path d="m9 9 6 6M15 9l-6 6" />
-              </svg>
+              <Icon icon={xCircle} className="h-6 w-6" aria-hidden />
             </span>
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#F6C9C9]">
@@ -506,10 +538,7 @@ export default function CheckinScanner({
 
         <div className="mt-4 rounded-[20px] border border-[#E3E8EF] bg-white p-4 shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
           <div className="flex items-center gap-2">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#C08A1A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 shrink-0" aria-hidden>
-              <path d="M12 3 2 20h20L12 3Z" />
-              <path d="M12 10v4M12 17h.01" />
-            </svg>
+            <Icon icon={triangleAlert} className="h-4 w-4 shrink-0 text-[#C08A1A]" aria-hidden />
             <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#5B6B84]">
               Possible reasons
             </p>
@@ -561,9 +590,7 @@ export default function CheckinScanner({
           )}
           {starting && (
             <span className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-5 w-5 animate-spin text-white" aria-hidden>
-                <path d="M21 12a9 9 0 1 1-6.2-8.56" />
-              </svg>
+              <Icon icon={loader2} className="h-5 w-5 animate-spin text-white" aria-hidden />
               <span className="text-[13px] font-bold text-white">Requesting camera access…</span>
             </span>
           )}
@@ -630,9 +657,7 @@ export default function CheckinScanner({
               <p className="truncate text-[13px] font-bold text-[#162E55]">{preview.name}</p>
               {readingFile ? (
                 <p className="mt-0.5 inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#2B5BBD]">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-3.5 w-3.5 animate-spin" aria-hidden>
-                    <path d="M21 12a9 9 0 1 1-9-9" />
-                  </svg>
+                  <Icon icon={loader2} className="h-3.5 w-3.5 animate-spin" aria-hidden />
                   Scanning…
                 </p>
               ) : (
@@ -646,9 +671,7 @@ export default function CheckinScanner({
                 aria-label="Remove image"
                 className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[9px] bg-[#EEF1F5] text-[#5B6B84] transition hover:bg-[#E5E8EE] hover:text-[#C24141]"
               >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" className="h-4 w-4" aria-hidden>
-                  <path d="M6 6l12 12M18 6 6 18" />
-                </svg>
+                <Icon icon={x} className="h-4 w-4" aria-hidden />
               </button>
             )}
           </div>
@@ -819,21 +842,11 @@ function ViewFinderBrackets() {
 }
 
 function UploadIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5 text-[#2B5BBD]" aria-hidden>
-      <path d="M12 16V4m0 0-4 4m4-4 4 4" />
-      <path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3" />
-    </svg>
-  );
+  return <Icon icon={upload} className="h-5 w-5 text-[#2B5BBD]" aria-hidden />;
 }
 
 function ScanMiniIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4 text-[#8FB1DE]" aria-hidden>
-      <path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2" />
-      <rect x="9" y="9" width="6" height="6" rx="1" />
-    </svg>
-  );
+  return <Icon icon={scan} className="h-4 w-4 text-[#8FB1DE]" aria-hidden />;
 }
 
 function RoleBadge({ role }: { role: Role }) {

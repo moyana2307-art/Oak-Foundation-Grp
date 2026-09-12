@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Icon } from "@iconify/react/dist/offline";
+import loader2 from "@iconify/icons-lucide/loader-2";
 import FormField from "./FormField";
 import SelectField from "./SelectField";
 import RequirementsPanel from "./RequirementsPanel";
@@ -124,9 +126,7 @@ export default function RegistrationForm() {
         {redirecting ? (
           <div role="status" className="flex flex-col items-center py-10 text-center">
             <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#EAF0FB]">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#2B5BBD" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6 animate-spin" aria-hidden>
-                <path d="M21 12a9 9 0 1 1-6.2-8.56" />
-              </svg>
+              <Icon icon={loader2} className="h-6 w-6 animate-spin text-[#2B5BBD]" aria-hidden />
             </span>
             <p className="mt-3 text-[14px] font-semibold text-[#162E55]">
               Registration complete — taking you to your dashboard…

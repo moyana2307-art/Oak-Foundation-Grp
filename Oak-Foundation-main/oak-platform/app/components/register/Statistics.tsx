@@ -1,49 +1,34 @@
+import { Icon } from "@iconify/react/dist/offline";
+import user from "@iconify/icons-lucide/user";
+import calendarDays from "@iconify/icons-lucide/calendar-days";
+import users from "@iconify/icons-lucide/users";
+
 type Stat = {
   value: string;
   label: string;
   icon: React.ReactNode;
 };
 
-const strokeProps = {
-  fill: "none",
-  stroke: "#162E55",
-  strokeWidth: 1.7,
-  strokeLinecap: "round",
-  strokeLinejoin: "round",
-} as const;
-
 const stats: Stat[] = [
   {
     value: "110+",
     label: "Attendees",
     icon: (
-      <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" {...strokeProps}>
-        <circle cx="12" cy="7.5" r="3.5" />
-        <path d="M5.5 20c.8-3 3.4-4.5 6.5-4.5s5.7 1.5 6.5 4.5" />
-      </svg>
+      <Icon icon={user} className="h-[18px] w-[18px] text-[#162E55]" aria-hidden />
     ),
   },
   {
     value: "24",
     label: "Sessions",
     icon: (
-      <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" {...strokeProps}>
-        <rect x="4" y="5" width="16" height="15" rx="3" />
-        <path d="M8 3v4M16 3v4M4 10h16" />
-      </svg>
+      <Icon icon={calendarDays} className="h-[18px] w-[18px] text-[#162E55]" aria-hidden />
     ),
   },
   {
     value: "38",
     label: "Partners",
     icon: (
-      <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" {...strokeProps}>
-        <circle cx="6" cy="6.5" r="2.5" />
-        <circle cx="18" cy="8" r="2.5" />
-        <path d="M12 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z" />
-        <path d="M2.5 20c.6-3 1.9-4.5 4.5-4.5.8 0 1.5.1 2.2.4M15 14.5c.6-.3 1.4-.4 2-.4 2.6 0 4 1.5 4.5 4.5" />
-        <path d="M12 15.5c.8 0 1.5.1 2.2.4 1 2 1 3.4 1 4.6H8.8c0-1.2 0-2.6.9-4.6.7-.3 1.4-.4 2.3-.4Z" />
-      </svg>
+      <Icon icon={users} className="h-[18px] w-[18px] text-[#162E55]" aria-hidden />
     ),
   },
 ];

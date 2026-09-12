@@ -1,3 +1,6 @@
+import { Icon } from "@iconify/react/dist/offline";
+import chevronDown from "@iconify/icons-lucide/chevron-down";
+
 type SelectFieldProps = {
   id: string;
   value: string;
@@ -44,18 +47,11 @@ export default function SelectField({
           </option>
         ))}
       </select>
-      <svg
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="#8A97AB"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2"
+      <Icon
+        icon={chevronDown}
+        className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A97AB]"
         aria-hidden
-      >
-        <path d="m6 9 6 6 6-6" />
-      </svg>
+      />
     </div>
   );
 }

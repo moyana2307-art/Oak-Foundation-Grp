@@ -1,6 +1,11 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { QRCodeSVG } from "qrcode.react";
+import { Icon } from "@iconify/react/dist/offline";
+import arrowRight from "@iconify/icons-lucide/arrow-right";
+import checkCircle from "@iconify/icons-lucide/check-circle";
+import mapPin from "@iconify/icons-lucide/map-pin";
+import refreshCw from "@iconify/icons-lucide/refresh-cw";
 import QrDownloadButton from "../components/QrDownloadButton";
 import { getSession, ROLE_HOME, clearSessionCookie } from "@/lib/auth";
 import { ROLE_LABELS, type Role } from "../components/register/types";
@@ -45,10 +50,7 @@ export default async function PassPage() {
 
         <section className="rounded-[24px] bg-gradient-to-br from-[#263D61] via-[#1D3150] to-[#162E55] px-6 py-7 text-center shadow-[0_18px_40px_-18px_rgba(22,46,85,0.55)]">
           <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-[14px] bg-white/15 ring-1 ring-white/20">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="h-5.5 w-5.5 text-white" aria-hidden>
-              <circle cx="12" cy="12" r="9" />
-              <path d="M8.5 12.5 11 15l4.5-5.5" />
-            </svg>
+            <Icon icon={checkCircle} className="h-5.5 w-5.5 text-white" aria-hidden />
           </span>
           <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.24em] text-[#8FB1DE]">
             Registration Complete
@@ -72,10 +74,7 @@ export default async function PassPage() {
             {session.reference}
           </p>
           <p className="mt-2 flex items-center justify-center gap-1.5 text-[11px] font-medium text-[#6B7A90]">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5" aria-hidden>
-              <path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11Z" />
-              <circle cx="12" cy="10" r="2.5" />
-            </svg>
+            <Icon icon={mapPin} className="h-3.5 w-3.5" aria-hidden />
             Present at event entrance for check-in
           </p>
         </section>
@@ -101,9 +100,7 @@ export default async function PassPage() {
           className="flex h-[54px] w-full items-center justify-center gap-2 rounded-[14px] border border-[#C9D2E0] bg-white text-[14px] font-bold text-[#162E55] transition hover:bg-[#F2F5F9]"
         >
           {homeLabels[session.role as Role] ?? "Continue"}
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
-            <path d="M5 12h14m-6-6 6 6-6 6" />
-          </svg>
+          <Icon icon={arrowRight} className="h-4 w-4" aria-hidden />
         </Link>
 
         <div className="flex justify-center pb-1 pt-1">
@@ -111,9 +108,7 @@ export default async function PassPage() {
             href="/"
             className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#2B5BBD] hover:underline"
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5" aria-hidden>
-              <path d="M21 12a9 9 0 1 1-2.64-6.36M21 3v6h-6" />
-            </svg>
+            <Icon icon={refreshCw} className="h-3.5 w-3.5" aria-hidden />
             Register another attendee
           </Link>
         </div>

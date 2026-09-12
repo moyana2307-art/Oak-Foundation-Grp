@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@iconify/icons-lucide": "^1.2.135",
+    "@iconify/react": "^6.0.2",
     "@supabase/ssr": "^0.12.6",
     "@supabase/supabase-js": "^2.115.0",
     "html5-qrcode": "^2.3.8",

@@ -2,6 +2,8 @@
 
 import { useMemo } from "react";
 import Link from "next/link";
+import { Icon } from "@iconify/react/dist/offline";
+import scan from "@iconify/icons-lucide/scan";
 import { ROLE_LABELS, type Role } from "@/app/components/register/types";
 import AttendanceTable from "./AttendanceTable";
 import { EXPECTED_ATTENDEES, SEED_ATTENDEES, useEventStore } from "@/lib/eventStore";
@@ -105,10 +107,7 @@ export default function AttendanceDashboard({
       {checkedIn === 0 ? (
         <div className="mt-4 rounded-[24px] border border-[#E3E8EF] bg-white p-6 text-center shadow-[0_10px_25px_-16px_rgba(22,46,85,0.3)]">
           <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-[16px] bg-[#EEF1F5]">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#2B5BBD" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-7 w-7" aria-hidden>
-              <path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2" />
-              <rect x="9" y="9" width="6" height="6" rx="1" />
-            </svg>
+            <Icon icon={scan} className="h-7 w-7 text-[#2B5BBD]" aria-hidden />
           </span>
           <h2 className="mt-3 text-[16px] font-bold text-[#162E55]">
             No check-ins yet

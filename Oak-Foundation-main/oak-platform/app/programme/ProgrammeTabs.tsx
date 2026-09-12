@@ -1,6 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { Icon } from "@iconify/react/dist/offline";
+import download from "@iconify/icons-lucide/download";
+import fileSpreadsheet from "@iconify/icons-lucide/file-spreadsheet";
+import fileText from "@iconify/icons-lucide/file-text";
+import image from "@iconify/icons-lucide/image";
+import mapPin from "@iconify/icons-lucide/map-pin";
+import plus from "@iconify/icons-lucide/plus";
 import {
   CATEGORY_COLORS,
   CATEGORY_LABELS,
@@ -203,10 +210,7 @@ function SessionRow({ entry }: { entry: ScheduleSession }) {
             <span className="text-[#8A97AB]"> · {entry.org}</span>
           </p>
           <p className="mt-1.5 flex items-center gap-1 text-[11px] font-semibold text-[#8A97AB]">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5" aria-hidden>
-              <path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11Z" />
-              <circle cx="12" cy="10" r="2.5" />
-            </svg>
+            <Icon icon={mapPin} className="h-3.5 w-3.5" aria-hidden />
             {entry.venue}
           </p>
         </div>
@@ -274,9 +278,7 @@ function DocsView({
               aria-label={`Download ${res.name}`}
               className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#EEF1F5] text-[#162E55] transition hover:bg-[#162E55] hover:text-white"
             >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4" aria-hidden>
-                <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
-              </svg>
+              <Icon icon={download} className="h-4 w-4" aria-hidden />
             </button>
           </div>
         ))}
@@ -321,9 +323,7 @@ function SessionNotesFeed({ authorName, authorOrg }: { authorName: string; autho
           }}
           className="mb-2.5 inline-flex h-[34px] items-center gap-1.5 rounded-full bg-[#162E55] px-3.5 text-[12px] font-bold text-white transition hover:bg-[#1F3A6B]"
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" className="h-3.5 w-3.5" aria-hidden>
-            <path d="M12 5v14M5 12h14" />
-          </svg>
+          <Icon icon={plus} className="h-3.5 w-3.5" aria-hidden />
           {composing ? "Cancel" : "Add Note"}
         </button>
       </div>
@@ -440,23 +440,14 @@ function TabButton({
 }
 
 function FileIcon({ type }: { type: "pdf" | "doc" | "xls" | "gallery" }) {
+  const iconByType = {
+    pdf: fileText,
+    doc: fileText,
+    xls: fileSpreadsheet,
+    gallery: image,
+  };
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5" aria-hidden>
-      {type === "gallery" ? (
-        <>
-          <rect x="3" y="4" width="18" height="15" rx="3" />
-          <path d="m8 11 3 3 2-2 3 3" />
-        </>
-      ) : (
-        <>
-          <path d="M6 3h9l4 4v14H6z" />
-          <path d="M14 3v4h4" />
-          {type === "pdf" && <path d="M9 13v-3h2a1 1 0 0 1 0 2H9m2 0H9m1.5 1V13" />}
-          {type === "doc" && <path d="M9 13h6M9 16h4" />}
-          {type === "xls" && <path d="M8 13l8 4M16 13l-8 4" />}
-        </>
-      )}
-    </svg>
+    <Icon icon={iconByType[type]} className="h-5 w-5" aria-hidden />
   );
 }
 
