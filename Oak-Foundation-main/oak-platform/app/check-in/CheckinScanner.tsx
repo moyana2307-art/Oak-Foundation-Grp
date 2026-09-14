@@ -54,6 +54,28 @@ const SCAN_ID = "checkin-reader";
 const FILE_SCAN_ID = "checkin-file-reader";
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 
+// Live-scan tuning for the rear camera. fps controls how often a frame is
+// decoded; disableFlip skips the wasted mirrored re-decode that html5-qrcode
+// runs by default (the rear camera image is not mirrored, so the second pass
+// can never match). Together these roughly halve per-frame work on mobile.
+// qrbox is sized relative to the viewfinder so the scan area is no smaller
+// than a phone screen's worth of space, instead of a fixed tiny box.
+const SCAN_FPS = 15;
+
+function scanConfig() {
+  return {
+    fps: SCAN_FPS,
+    disableFlip: true,
+    qrbox: (viewfinderWidth: number, viewfinderHeight: number) => {
+      const edge = Math.max(
+        200,
+        Math.min(320, Math.floor(Math.min(viewfinderWidth, viewfinderHeight) * 0.72))
+      );
+      return { width: edge, height: edge };
+    },
+  };
+}
+
 function pickCamera(devices: { id: string; label?: string }[]) {
   if (devices.length === 0) return null;
   const rear = devices.find((d) => {
@@ -236,7 +258,7 @@ export default function CheckinScanner({
         try {
           await scanner.start(
             { facingMode: "environment" },
-            { fps: 10, qrbox: { width: 220, height: 220 } },
+            scanConfig(),
             onScan,
             () => {}
           );
@@ -248,7 +270,7 @@ export default function CheckinScanner({
           if (!cameraId) throw startErr;
           await scanner.start(
             cameraId,
-            { fps: 10, qrbox: { width: 220, height: 220 } },
+            scanConfig(),
             onScan,
             () => {}
           );

@@ -16,6 +16,11 @@ export const metadata: Metadata = {
     "Register, check in, view the programme and partner directory for the OAK Foundation Partner Convening 2026 in Harare.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const session = await getSession();
   return (
